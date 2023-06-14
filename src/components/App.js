@@ -1,11 +1,11 @@
 import React from "react";
-// import ForumControl from './ForumControl'
+import WordControl  from "./WordControl"
 
 
 function App() {
   return (
     <React.Fragment>
-      {/* <ForumControl /> */}
+      <WordControl />
     </React.Fragment>
   );
 }
