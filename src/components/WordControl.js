@@ -9,13 +9,25 @@ class WordControl extends React.Component {
     super(props)
     this.state = {
       guessList: [],
-      targetWord: [],
+      targetWord: ['t', 'a', 'r', 'g', 'e', 't'],
       revealLetter: [],
       numberOfGuesses: 0,
-      errorMessage: null
+      errorMessage: null,
+      isGuessCorrect: null,
+      endGameMessage: null
     };
   }
 
+  componentDidMount(){
+    this.initiateTargetLetters();
+  }
+
+    // loadTargetWord () 
+
+  initiateTargetLetters = () => {
+    const newRevealLetter = this.state.targetWord.map(letter => "_");
+    this.setState({ revealLetter: newRevealLetter});
+  }
 
   onGuessEvent = (char) => {
     let newGuessList;
@@ -29,24 +41,58 @@ class WordControl extends React.Component {
       newGuessList = this.state.guessList.concat(char);
       newNumberOfGuesses = this.state.numberOfGuesses + 1;
       newErrorMessage = null;
+      this.evaluateGuess(char);
     }
-    
     this.setState({ 
       guessList: newGuessList,
       numberOfGuesses: newNumberOfGuesses,
       errorMessage: newErrorMessage
-     });
+    });
+
+    this.gameOver();
   }
   
+  evaluateGuess = (char) => {
+    let guessMessage;
+    if (this.state.targetWord.includes(char)) {
+      guessMessage = "you guessed correctly";
+      this.updateRevealLetters(char);
+    }
+    else {
+      guessMessage = "wrong! try again!";
+    }
+    this.setState({ isGuessCorrect: guessMessage });
+  }
+
+  updateRevealLetters = (char) => {
+    let updatedRevealLetter = this.state.revealLetter;
+    this.state.targetWord.map((ch,index) => (ch === char) ? updatedRevealLetter[index] = char : null );
+    this.setState({ revealLetter: updatedRevealLetter});
+  }
+
+  gameOver = () => {
+    let gameOverMessage;
+    if (this.state.revealLetter.join("") === this.state.targetWord.join("")) {
+      gameOverMessage = "YOU WIN!!!";
+    }
+    else if (this.state.guessList.length === 5) {
+      gameOverMessage = "YOU LOSE!!!"
+    }
+    this.setState({endGameMessage: gameOverMessage});
+  }
+
+/* 
+  1. take targetWord
+  2. map to create a dummyArray full of "_"
+  3. take index of where guess occurs in targetWord
+  4. in dummyArray, switch "_" at index from step three with guess letter
+*/
+
+
+
   // generateTargetWord = (word) => {
   //   const wordArray =  word.split('');
   //   this.setState({targetWord: wordArray});
-  // }
-
-  // addGuessToList = (letter) => {
-  //   const newGuesses = this.state.guesses.concat(letter);
-  //   this.setState({guesses: newGuesses});
-  //   //missing functionality for checking already guessed letters
   // }
 
   // checkGuessAgainstTargetWord = (letter) => {
@@ -70,19 +116,23 @@ class WordControl extends React.Component {
     let guessForm = null;
 
     guessForm = <GuessForm onGuessEvent1={this.onGuessEvent}/>
+
     // displayGuessList = <GuessList addGuessToListProp={this.addGuessToList}/>
     // displayRevealedWord = <DisplayTargetWord revealLetterProp={this.revealLetter} />
     // gameOver = <CheckForGameOver checkNumberOfGuessesProp={this.checkNumberOfGuesses} checkWordCompleteProp={this.checkWordComplete} />
-
+    
 
     return (
       <>
       <h1>Guess a Letter</h1>
       {guessForm}
+      <h2>Answer:{this.state.revealLetter.join(' ')}</h2>
       <h2>Here are your guesses: {this.state.guessList}</h2>
       <h2>Number of Guesses: {this.state.numberOfGuesses}</h2>
       {this.state.errorMessage}
       <hr></hr>
+      <h2>isGuessCorrect: {this.state.isGuessCorrect}</h2>
+      <h1>{this.state.endGameMessage}</h1>
       {console.log(this.state)}
 
       {/* <h2>Spent Letters</h2>
@@ -102,9 +152,9 @@ export default WordControl;
 2. display that guess *
 3. display multiple guesses * 
 4. ensure no duplicate guesses *
-5. render (hidden) target word 
-6. evaluate a guess to be correct or incorrect
-7. begin to reveal word with correct guesses
+5. evaluate a guess to be correct or incorrect *
+6. begin to reveal word with correct guesses
+7. render (hidden) target word 
 */
 
 
