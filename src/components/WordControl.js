@@ -48,7 +48,6 @@ class WordControl extends React.Component {
       numberOfGuesses: newNumberOfGuesses,
       errorMessage: newErrorMessage
     });
-
     this.gameOver();
   }
   
