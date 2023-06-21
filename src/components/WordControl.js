@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from "prop-types";
 import GuessForm from './guessForm';
+import { auth } from './../firebase.js';
 
 
 class WordControl extends React.Component {
@@ -119,7 +120,13 @@ class WordControl extends React.Component {
     // displayGuessList = <GuessList addGuessToListProp={this.addGuessToList}/>
     // displayRevealedWord = <DisplayTargetWord revealLetterProp={this.revealLetter} />
     // gameOver = <CheckForGameOver checkNumberOfGuessesProp={this.checkNumberOfGuesses} checkWordCompleteProp={this.checkWordComplete} />
-    
+    if (auth.currentUser == null) {
+      return (
+        <React.Fragment>
+          <h1>You must be signed in to access the game.</h1>
+        </React.Fragment>
+      )
+    } else if (auth.currentUser != null) {
 
     return (
       <>
@@ -142,8 +149,7 @@ class WordControl extends React.Component {
       </>
     );
   }
-  
- 
+}
 }
 export default WordControl;
 /* 
